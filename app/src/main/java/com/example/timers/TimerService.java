@@ -35,7 +35,7 @@ public class TimerService extends Service {
         builder.setContentTitle("Egg Timer")
                 .setContentText(text)
                 .setOnlyAlertOnce(true)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.thumb_image)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
         notificationManager.notify(1, builder.build());
