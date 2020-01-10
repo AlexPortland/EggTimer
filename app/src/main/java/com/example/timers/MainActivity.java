@@ -30,16 +30,11 @@ public class MainActivity extends AppCompatActivity {
     CountDownTimer countDownTimer;
     MediaPlayer mPlayer;
     boolean mPlayerIsActive = false;
-    //PowerManager pm;
-    //PowerManager.WakeLock wl = null;
     int currentTimeLeft = 0;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     public void startService(){
         Intent serviceIntent = new Intent(this, TimerService.class);
         serviceIntent.putExtra("timeLeft", Integer.toString(currentTimeLeft));
-
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
@@ -53,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         int minutes = secondsLeft / 60;
         int seconds = secondsLeft - minutes * 60;
         if(seconds < 10){
-            time_tv.setText((Integer.toString(minutes)) + ":0" + (Integer.toString(seconds)));
+            time_tv.setText(minutes + ":0" + seconds);
         }
         else{
-            time_tv.setText((Integer.toString(minutes)) + ":" + (Integer.toString(seconds)));
+            time_tv.setText(minutes + ":" + seconds);
         }
     }
 
@@ -80,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
                 seconds = 0;
         }
         if(seconds < 10){
-            time_tv.setText((Integer.toString(minutes)) + ":0" + (Integer.toString(seconds)));
+            time_tv.setText(minutes + ":0" + seconds);
             seekbar.setProgress(seconds + minutes * 60);
         }
         else{
-            time_tv.setText((Integer.toString(minutes)) + ":" + (Integer.toString(seconds)));
+            time_tv.setText(minutes + ":" + seconds);
             seekbar.setProgress(seconds + minutes * 60);
         }
     }
@@ -99,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             if(view != null){
                 timeLeft = seekbar.getProgress();
             }
-            //wl.acquire();
             fireGif.animate().alpha(1f).translationYBy(10).setDuration(1000);
             counterIsActive = true;
             seekbar.setEnabled(false);
@@ -120,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }.start();
         } else if (counterIsActive){
-            //wl.release();
             Log.i("controlTimerCheck", "Entered counterIsActive");
             counterIsActive = false;
             Log.i("controlTimerCheck", "counterIsActive = " + counterIsActive);
@@ -144,27 +137,14 @@ public class MainActivity extends AppCompatActivity {
             String timeLeft = intent.getStringExtra("timeLeft");
             Log.i("controlTimerCheck", "Calling controlTimer with time = " + timeLeft);
             controlTimer(null, Integer.parseInt(timeLeft));
-
         }
     };
 
     public void controlTimerIfRestored(){
-        Bundle intentData = getIntent().getExtras();
         //---------------------------------------------------------
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter("intentName"));
         //---------------------------------------------------------
-        //String moses = data.getResultData();
-        //TODO: Move this to onReceive above
-//        if(intentData != null){
-//            int progress = intentData.getInt("progress",30);
-//            int timeLeft = intentData.getInt("timeLeft", 0);
-//            if(timeLeft != 0){
-//                seekbar.setProgress(progress);
-//                counterIsActive = false;
-//                controlTimer(null, timeLeft);
-//            }
-//        }
     }
 
     @Override
@@ -177,10 +157,6 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.start_button);
         seekbar.setMax(1200);
         seekbar.setProgress(30);
-        //TODO: Think about removing this lock
-        //pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        //wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);//"EggTimer:WAKE_LOCK");
-        //wl.acquire();
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -202,24 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 .load(R.drawable.fire)
                 .into(fireGif);
         fireGif.animate().alpha(0f).translationYBy(-10);
-
-        //controlTimerIfRestored();
-
-//        final TextView text = findViewById(R.id.text);
-//        final Handler handler = new Handler();
-//        Runnable run = new Runnable() {
-//            @Override
-//            public void run() {
-//                text.setText(Integer.toString(time));
-//                handler.postDelayed(this, 1000);
-//                time++;
-//                Log.i("run",Integer.toString(time));
-//            }
-//        };
-//        handler.post(run);
-        //-----------------------------------------------------
-
-
     }
 
     @Override
@@ -239,11 +197,11 @@ public class MainActivity extends AppCompatActivity {
             countDownTimer.cancel();
             startService();
         }
+        if(mPlayerIsActive) {
+            mPlayer.stop();
+            mPlayerIsActive = false;
+        }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-
-
-//        if (wl.isHeld())
-//            wl.release();
         super.onPause();
     }
     @Override

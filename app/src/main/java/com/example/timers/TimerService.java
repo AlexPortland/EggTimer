@@ -29,7 +29,7 @@ public class TimerService extends Service {
     static boolean timerIsActive = false;
     int gTime = 0;
 
-    public void test(String text){
+    public void updateNotification(String text){
         notificationManager = NotificationManagerCompat.from(this);
         builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setContentTitle("Egg Timer")
@@ -45,14 +45,11 @@ public class TimerService extends Service {
         int minutes = time / 60;
         int seconds = time - minutes * 60;
         if(seconds < 10){
-            test((Integer.toString(minutes)) + ":0" + (Integer.toString(seconds)));
-            //notification.setContentText((Integer.toString(minutes)) + ":0" + (Integer.toString(seconds)));
+            updateNotification(minutes + ":0" + seconds);
         }
         else{
-            //notification.setContentText((Integer.toString(minutes)) + ":" + (Integer.toString(seconds)));
-            test((Integer.toString(minutes)) + ":" + (Integer.toString(seconds)));
+            updateNotification(minutes + ":" + seconds);
         }
-        //notificationManager.notify(1, notification);
     }
 
     public void runTimer(int timeLeft){
@@ -63,7 +60,6 @@ public class TimerService extends Service {
                 public void onTick(long milUntilDone) {
                     updateTime((int) milUntilDone / 1000);
                 }
-
                 public void onFinish() {
                     Log.i("Done", "Service FINISHED!!");
                     timerIsActive = false;
@@ -90,25 +86,12 @@ public class TimerService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        //TODO: Make this and all above nicer
-        //notificationManager = NotificationManagerCompat.from(this);
-//        builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-//        builder.setContentTitle("Egg Timer")
-//                .setContentText(text)
-//                .setSmallIcon(R.mipmap.ic_launcher_round)
-//                .setContentIntent(pendingIntent)
-//                .setPriority(NotificationCompat.PRIORITY_LOW);
-
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Egg Timer")
                 .setContentText(text)
                 .setSmallIcon(R.mipmap.ic_launcher_round);
-
         startForeground(1, notification.build());
         runTimer(Integer.parseInt(text));
-        //do heavy work on a background thread
-        //stopSelf();
-
         return START_NOT_STICKY;
     }
 
@@ -124,7 +107,6 @@ public class TimerService extends Service {
             mPlayer.stop();
         }
         Log.i("controlTimerCheck", "countDownTimer is canceled in service");
-        //TODO: Remove redundant conversion
         Intent i = new Intent("intentName").putExtra("timeLeft", Integer.toString(gTime));
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         stopSelf();
