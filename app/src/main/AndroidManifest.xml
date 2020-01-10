@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.timers">
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/egg_main"
         android:label="Egg Timer"
@@ -16,6 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".TimerService" />
     </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 </manifest>
