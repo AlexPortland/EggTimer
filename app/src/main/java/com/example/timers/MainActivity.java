@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.PowerManager;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -31,6 +33,28 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mPlayer;
     boolean mPlayerIsActive = false;
     int currentTimeLeft = 0;
+
+    public void VolumeCheck(){
+        //Media volume levels check
+        AudioManager am = null;
+        try {
+            am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        }
+        catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(),"ERROR trying the get device volume", Toast.LENGTH_LONG).show();
+            Log.i("VolumeCheckError", e.toString());
+        }
+        if (am == null){
+            return;
+        }
+        int music_volume_level = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int volume_percentage =  (int)((((float)music_volume_level/(float)max)) * 100.0);
+        Log.i("VolumeCheck", "volume_percentage: " + volume_percentage);
+        if (volume_percentage < 25){
+            Toast.makeText(getApplicationContext(),"Sound volume is too low (pump it up)", Toast.LENGTH_LONG).show();
+        }
+    }
 
     public void startService(){
         Intent serviceIntent = new Intent(this, TimerService.class);
@@ -97,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             fireGif.animate().alpha(1f).translationYBy(10).setDuration(1000);
             counterIsActive = true;
             seekbar.setEnabled(false);
+            time_tv.setEnabled(false);
             button.setText("STOP");
             countDownTimer = new CountDownTimer(timeLeft * 1000, 1000) {
                 public void onTick(long milUntilDone) {
@@ -121,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             seekbar.setProgress(30);
             button.setText("START");
             seekbar.setEnabled(true);
+            time_tv.setEnabled(true);
             updateTime(30);
             fireGif.animate().alpha(0f).translationYBy(-10).setDuration(1000);
             if(mPlayerIsActive) {
@@ -178,6 +204,8 @@ public class MainActivity extends AppCompatActivity {
                 .load(R.drawable.fire)
                 .into(fireGif);
         fireGif.animate().alpha(0f).translationYBy(-10);
+
+        VolumeCheck();
     }
 
     @Override

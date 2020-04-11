@@ -29,11 +29,29 @@ public class TimerService extends Service {
     static boolean timerIsActive = false;
     int gTime = 0;
 
-    public void updateNotification(String text){
+    public String EggT_SetTextByTime(int minutes){
+        if (minutes >= 15){
+            return "Long time to go...";
+        }
+        else if (minutes >= 10){
+            return "Have a coffee break and come back";
+        }
+        else if (minutes >= 5){
+            return "Stay around, it's almost done";
+        }
+        else if (minutes >= 1){
+            return "Prepare to eat!";
+        }
+        else{
+            return "Turn off the stove";
+        }
+    }
+
+    public void updateNotification(String time_text, String header_text){
         notificationManager = NotificationManagerCompat.from(this);
         builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        builder.setContentTitle("Egg Timer")
-                .setContentText(text)
+        builder.setContentTitle(header_text)
+                .setContentText(time_text)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.thumb_image)
                 .setContentIntent(pendingIntent)
@@ -45,10 +63,10 @@ public class TimerService extends Service {
         int minutes = time / 60;
         int seconds = time - minutes * 60;
         if(seconds < 10){
-            updateNotification(minutes + ":0" + seconds);
+            updateNotification(minutes + ":0" + seconds, EggT_SetTextByTime(minutes));
         }
         else{
-            updateNotification(minutes + ":" + seconds);
+            updateNotification(minutes + ":" + seconds, EggT_SetTextByTime(minutes));
         }
     }
 
@@ -66,6 +84,7 @@ public class TimerService extends Service {
                     mPlayerIsActive = true;
                     mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.boiling_sound);
                     mPlayer.start();
+                    updateTime(0);
                 }
             }.start();
         } else {
@@ -81,6 +100,7 @@ public class TimerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle extras = intent.getExtras();
+        assert extras != null;
         String text = extras.getString("timeLeft", "0");
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
