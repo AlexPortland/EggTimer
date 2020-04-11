@@ -26,7 +26,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     ImageView fireGif;
     SeekBar seekbar;
-    TextView time_tv;
+    TextView minutes_tv;
+    TextView seconds_tv;
     TextView button;
     static boolean counterIsActive = false ;
     CountDownTimer countDownTimer;
@@ -71,11 +72,17 @@ public class MainActivity extends AppCompatActivity {
         currentTimeLeft = secondsLeft;
         int minutes = secondsLeft / 60;
         int seconds = secondsLeft - minutes * 60;
-        if(seconds < 10){
-            time_tv.setText(minutes + ":0" + seconds);
+        if(seconds < 10) {
+            seconds_tv.setText("0" + Integer.toString(seconds));
         }
         else{
-            time_tv.setText(minutes + ":" + seconds);
+            seconds_tv.setText(Integer.toString(seconds));
+        }
+        if(minutes < 10){
+            minutes_tv.setText("0" + Integer.toString(minutes));
+        }
+        else{
+            minutes_tv.setText(Integer.toString(minutes));
         }
     }
 
@@ -98,14 +105,19 @@ public class MainActivity extends AppCompatActivity {
             default:
                 seconds = 0;
         }
-        if(seconds < 10){
-            time_tv.setText(minutes + ":0" + seconds);
-            seekbar.setProgress(seconds + minutes * 60);
+        if(seconds < 10) {
+            seconds_tv.setText("0" + Integer.toString(seconds));
         }
         else{
-            time_tv.setText(minutes + ":" + seconds);
-            seekbar.setProgress(seconds + minutes * 60);
+            seconds_tv.setText(Integer.toString(seconds));
+            }
+        if(minutes < 10){
+            minutes_tv.setText("0" + Integer.toString(minutes));
         }
+        else{
+            minutes_tv.setText(Integer.toString(minutes));
+        }
+        seekbar.setProgress(seconds + minutes * 60);
     }
     public void controlTimerWrapper(View view){
         controlTimer(view, 1);
@@ -116,12 +128,16 @@ public class MainActivity extends AppCompatActivity {
             Log.i("controlTimerCheck", "timeLeft =  " + timeLeft);
             //fireGif.setAlpha(1f);
             if(view != null){
-                timeLeft = seekbar.getProgress();
+                int minutes = Integer.parseInt(minutes_tv.getText().toString());
+                int seconds = Integer.parseInt(seconds_tv.getText().toString());
+                timeLeft = seconds + (minutes * 60);
+                //timeLeft = seekbar.getProgress();
             }
             fireGif.animate().alpha(1f).translationYBy(10).setDuration(1000);
             counterIsActive = true;
             seekbar.setEnabled(false);
-            time_tv.setEnabled(false);
+            minutes_tv.setEnabled(false);
+            seconds_tv.setEnabled(false);
             button.setText("STOP");
             countDownTimer = new CountDownTimer(timeLeft * 1000, 1000) {
                 public void onTick(long milUntilDone) {
@@ -130,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
                 public void onFinish() {
                     if (counterIsActive){
-                        //TODO: Fix sound keep playing even if stopped
                         Log.i("Done", "Main FINISHED!!, counterIsActive =  " + counterIsActive);
                         mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.boiling_sound);
                         mPlayer.start();
@@ -146,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
             seekbar.setProgress(30);
             button.setText("START");
             seekbar.setEnabled(true);
-            time_tv.setEnabled(true);
+            minutes_tv.setEnabled(true);
+            seconds_tv.setEnabled(true);
             updateTime(30);
             fireGif.animate().alpha(0f).translationYBy(-10).setDuration(1000);
             if(mPlayerIsActive) {
@@ -177,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        time_tv = findViewById(R.id.textView);
+        minutes_tv = findViewById(R.id.Minutes);
+        seconds_tv = findViewById(R.id.Seconds);
         fireGif = findViewById(R.id.fire);
         seekbar = findViewById(R.id.seekBar);
         button = findViewById(R.id.start_button);
