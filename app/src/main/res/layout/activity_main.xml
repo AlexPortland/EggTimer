@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="showHeart"/>
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -48,54 +49,58 @@
         app:layout_constraintVertical_bias="0.85"
         app:srcCompat="@drawable/egg_main" />
 
-    <EditText
-        android:id="@+id/Minutes"
-        android:layout_width="70dp"
-        android:layout_height="86dp"
-        android:background="@null"
-        android:text="00"
-        android:textAlignment="center"
-        android:textSize="60sp"
-        android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.361"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.494" />
+    <ImageView
+        android:id="@+id/heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/fire"
+        app:layout_constraintLeft_toLeftOf="@id/fire"
+        app:layout_constraintRight_toRightOf="@id/fire"
+        android:src="@drawable/two_heart"
+        android:visibility="invisible"/>
 
-    <TextView
-        android:id="@+id/Colon"
-        android:layout_width="70dp"
-        android:layout_height="86dp"
-        android:layout_marginEnd="8dp"
-        android:background="@null"
-        android:text=":"
-        android:textAlignment="center"
-        android:textSize="60sp"
+    <RelativeLayout
+        android:id="@+id/time_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.494" />
+        android:layoutDirection="ltr">
+        <EditText
+            android:id="@+id/Minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="00"
+            android:textAlignment="center"
+            android:textSize="60sp"
+            android:inputType="number" />
 
-    <EditText
-        android:id="@+id/Seconds"
-        android:layout_width="70dp"
-        android:layout_height="86dp"
-        android:layout_marginEnd="8dp"
-        android:background="@null"
-        android:text="30"
-        android:textAlignment="center"
-        android:textSize="60sp"
-        android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.658"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.494" />
+        <TextView
+            android:id="@+id/Colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:background="@null"
+            android:text=":"
+            android:textAlignment="center"
+            android:textSize="60sp"
+            android:layout_toRightOf="@id/Minutes"
+ />
+
+        <EditText
+            android:id="@+id/Seconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="30"
+            android:textAlignment="center"
+            android:textSize="60sp"
+            android:inputType="number"
+            android:layout_toRightOf="@id/Colon"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/start_button"
@@ -112,6 +117,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/Minutes" />
+        app:layout_constraintTop_toBottomOf="@+id/time_rl" />
 
 </android.support.constraint.ConstraintLayout>
